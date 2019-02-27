@@ -1,12 +1,9 @@
 from middleware.auth import AuthMiddleware
 from misc import generate_random_string
-from redis_wrapper import RedisClient
+from redis_model import Session
 from peewee import PeeweeException
 from core.util import *
 from model import User
-
-
-redis_client = RedisClient()
 
 
 def register():
@@ -21,7 +18,8 @@ def register():
         user = User(username=username, password=password)
         user.save()
         access_token = generate_random_string()
-        redis_client.set(access_token, user.username)
+        session = Session(access_token, {"username": username})
+        session.save()
     except PeeweeException as e:
         return respond_error(str(e), 500)
 
@@ -43,7 +41,8 @@ def login():
         return respond_error("User not found", 404)
 
     access_token = generate_random_string()
-    redis_client.set(access_token, user.username)
+    session = Session(access_token, {"username": username})
+    session.save()
 
     data = user.to_dict()
     data["access_token"] = access_token
@@ -55,7 +54,9 @@ def profile():
     if not access_token:
         return respond_error("Session not found", 400)
 
-    username = redis_client.get(access_token)
+    session = Session(access_token)
+    session.load()
+    username = session.username
     user = User.get_or_none(User.username == username)
 
     return respond_data(user.to_dict())

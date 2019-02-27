@@ -2,7 +2,7 @@ import dotenv
 
 dotenv.load_dotenv()
 
-from handler import user_routes
+from handler import user_routes, room_routes
 from core.router import Router
 from flask import Flask
 import os
@@ -14,6 +14,7 @@ router = Router(app)
 
 router.get("/", lambda: "DOTD Backend Service Runnning")
 router.group("/user", user_routes)
+router.group("/room", room_routes)
 
 
 if __name__ == "__main__":

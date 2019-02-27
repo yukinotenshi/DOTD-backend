@@ -1,15 +1,14 @@
 from flask import request, redirect
 from core.middleware import Middleware
-from redis_wrapper import RedisClient
-
-
-redis_client = RedisClient()
+from redis_model import Session
 
 
 class AuthMiddleware(Middleware):
     def pre_check(self, *args, **kwargs):
         access_token = request.headers.get("Authorization")
-        username = redis_client.get(access_token)
+        session = Session(access_token)
+        session.load()
+        username = session.username
         return username is not None
 
     def default(self):
