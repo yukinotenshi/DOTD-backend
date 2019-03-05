@@ -36,7 +36,7 @@ class RedisBaseModel:
 
 class Session(RedisBaseModel):
     def __init__(self, key, data=None):
-        self.username = ''
+        self.username = ""
         super().__init__(key, data)
         self._fields = ["username"]
         if data:
@@ -45,9 +45,9 @@ class Session(RedisBaseModel):
 
 class Player(RedisBaseModel):
     def __init__(self, key, data=None):
-        self.username = ''
-        self.room_id = ''
-        self.team_id = ''
+        self.username = ""
+        self.room_id = ""
+        self.team_id = ""
         self.lat = 0.0
         self.lng = 0.0
         super().__init__(key, data)
@@ -58,10 +58,10 @@ class Player(RedisBaseModel):
 
 class Room(RedisBaseModel):
     def __init__(self, room_id, data=None):
-        self.room_id = ''
+        self.room_id = ""
         self.chasing_team = []
         self.hiding_team = []
-        self.owner = ''
+        self.owner = ""
         super().__init__(room_id, data)
         self._fields = ["room_id", "chasing_team", "hiding_team", "owner"]
         if data:

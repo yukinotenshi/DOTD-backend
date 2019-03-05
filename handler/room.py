@@ -38,7 +38,7 @@ def create_room():
         "team_id": "",
         "room_id": room_data["room_id"],
         "lat": 0.0,
-        "lng": 0.0
+        "lng": 0.0,
     }
 
     player = Player(session.username, player_data)
@@ -73,7 +73,7 @@ def join_room():
         "team_id": "",
         "room_id": room.room_id,
         "lat": 0.0,
-        "lng": 0.0
+        "lng": 0.0,
     }
 
     player = Player(session.username, player_data)
@@ -169,5 +169,5 @@ routes = {
     "/<room_id>": ("GET", AuthMiddleware(get_room)),
     "/join": ("POST", AuthMiddleware(join_room)),
     "/start": ("POST", AuthMiddleware(start_room)),
-    "/leave": ("POST", AuthMiddleware(leave_room))
+    "/leave": ("POST", AuthMiddleware(leave_room)),
 }
