@@ -47,12 +47,15 @@ def join_room():
     if not included:
         return error
 
-    session = load_session()
-    player = Player(session.username)
-    player.load()
+    try:
+        session = load_session()
+        player = Player(session.username)
+        player.load()
 
-    if player.room_id != '':
-        return respond_message("Already in another rooom")
+        if player.room_id != "":
+            return respond_message("Already in another rooom")
+    except:
+        pass
 
     room = Room(request.json["room_id"])
     try:
@@ -85,7 +88,7 @@ def leave_room():
     player.load()
 
     room = Room(player.room_id)
-    player.room_id = ''
+    player.room_id = ""
     try:
         room.load()
     except:
@@ -98,7 +101,7 @@ def leave_room():
         for username in player_usernames:
             p = Player(username)
             p.load()
-            p.room_id = ''
+            p.room_id = ""
             p.save()
 
         return respond_message("Room deleted", 200)

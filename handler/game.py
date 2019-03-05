@@ -53,8 +53,8 @@ def start_game():
 
 
 def submit_location():
-    lat = request.json.get('lat')
-    lng = request.json.get('lng')
+    lat = request.json.get("lat")
+    lng = request.json.get("lng")
 
     session = load_session()
 
@@ -115,9 +115,7 @@ def get_intensity():
             continue
         break
 
-    data = {
-        "intensity": score
-    }
+    data = {"intensity": score}
     if score == 1:
         data["player"] = p.to_dict()
 
@@ -161,9 +159,9 @@ def catch():
 
 
 routes = {
-    '/location': ('POST', AuthMiddleware(submit_location)),
-    '/start': ('POST', AuthMiddleware(start_game)),
-    '/<game_id>': ('GET', AuthMiddleware(get_status)),
-    '/intensity': ('GET', AuthMiddleware(get_intensity)),
-    '/catch': ('POST', AuthMiddleware(catch)),
+    "/location": ("POST", AuthMiddleware(submit_location)),
+    "/start": ("POST", AuthMiddleware(start_game)),
+    "/<game_id>": ("GET", AuthMiddleware(get_status)),
+    "/intensity": ("GET", AuthMiddleware(get_intensity)),
+    "/catch": ("POST", AuthMiddleware(catch)),
 }

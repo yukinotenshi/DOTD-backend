@@ -97,8 +97,8 @@ class Game(RedisBaseModel):
         room.load()
         self.room = room
         self.players = []
-        for p in data['players']:
-            player = Player(p['username'])
+        for p in data["players"]:
+            player = Player(p["username"])
             player.load()
             self.players.append(player)
 
