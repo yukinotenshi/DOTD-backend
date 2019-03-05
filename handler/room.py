@@ -53,7 +53,13 @@ def join_room():
         player.load()
 
         if player.room_id != "":
-            return respond_message("Already in another rooom")
+            room = Room(player.room_id)
+            room.load()
+            room.chasing_team.remove(session.username)
+            room.hiding_team.remove(session.username)
+            player.room_id = ''
+            room.save()
+            player.save()
     except:
         pass
 
