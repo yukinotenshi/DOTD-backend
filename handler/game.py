@@ -101,7 +101,7 @@ def get_intensity():
             continue
 
         x_dist = p.lat - player.lat
-        y_dist = p.lng = player.lng
+        y_dist = p.lng - player.lng
         # 1 degree lat/lng is approx 111km
         distance = sqrt(x_dist ** 2 + y_dist ** 2) * 111000
         if distance < 1.5:
@@ -145,7 +145,7 @@ def catch():
             continue
 
         x_dist = p.lat - player.lat
-        y_dist = p.lng = player.lng
+        y_dist = p.lng - player.lng
         # 1 degree lat/lng is approx 111km
         distance = sqrt(x_dist ** 2 + y_dist ** 2) * 111000
         if distance > 1.5:
