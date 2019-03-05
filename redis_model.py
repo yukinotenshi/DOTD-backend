@@ -27,7 +27,7 @@ class RedisBaseModel:
         self._set_data(data)
 
     def delete(self):
-        self._r.delete([self._key])
+        self._r.delete(self._key)
 
     def to_dict(self):
         data = {}
@@ -89,6 +89,18 @@ class Game(RedisBaseModel):
             p = Player(username)
             p.load()
             self.players.append(p)
+
+    def load(self):
+        data = self._r.get(self._key + type(self).__name__)
+        data = json.loads(data)
+        room = Room(data["room"]["room_id"])
+        room.load()
+        self.room = room
+        self.players = []
+        for p in data['players']:
+            player = Player(p['username'])
+            player.load()
+            self.players.append(player)
 
     def to_dict(self):
         data = {}

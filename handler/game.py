@@ -6,13 +6,11 @@ from redis_model import Room, Player, Game
 
 
 def start_game():
-    included, error = check_json_in_request(["room_id"])
-    if not included:
-        return error
-
     session = load_session()
+    player = Player(session.username)
+    player.load()
 
-    room = Room(request.json["room_id"])
+    room = Room(player.room_id)
     try:
         room.load()
     except:
@@ -69,10 +67,69 @@ def submit_location():
     return respond_data(p.to_dict())
 
 
+def get_status(game_id):
+    session = load_session()
+    game = Game(game_id)
+    game.load()
+    if session.username not in [p.username for p in game.players]:
+        return respond_message("You are not in game : {}".format(game_id), 403)
 
+    return respond_data(game.to_dict())
+
+
+def get_intensity():
+    session = load_session()
+    player = Player(session.username)
+    player.load()
+
+    try:
+        game = Game(player.room_id)
+        game.load()
+    except:
+        return respond_data("Not in game", 404)
+
+    score = 0
+    for p in game.players:
+        if not p.alive:
+            continue
+
+        if p.username == session.username:
+            continue
+
+        if p.team_id == player.team_id:
+            continue
+
+        x_dist = p.lat - player.lat
+        y_dist = p.lng = player.lng
+        # 1 degree lat/lng is approx 111km
+        distance = x_dist ** 2 + y_dist ** 2 * 111000
+        if distance < 1.5:
+            score = 1
+        elif distance < 3:
+            score = 0.8
+        elif distance < 7:
+            score = 0.5
+        elif distance < 10:
+            score = 0.2
+        else:
+            continue
+        break
+
+    data = {
+        "intensity": score
+    }
+    if score == 1:
+        data["position"] = {
+            "lat": p.lat,
+            "lng": p.lng
+        }
+
+    return respond_data(data)
 
 
 routes = {
     '/location': ('POST', AuthMiddleware(submit_location)),
-    '/start': ('POST', AuthMiddleware(start_game))
+    '/start': ('POST', AuthMiddleware(start_game)),
+    '/<game_id>': ('GET', AuthMiddleware(get_status)),
+    '/intensity': ('GET', AuthMiddleware(get_intensity))
 }

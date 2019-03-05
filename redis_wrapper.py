@@ -17,5 +17,5 @@ class RedisClient:
     def set(self, key, value):
         return self.r.set(key, value)
 
-    def delete(self, keys):
-        return self.r.delete(keys)
+    def delete(self, key):
+        return self.r.delete(key)
