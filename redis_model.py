@@ -48,8 +48,10 @@ class Player(RedisBaseModel):
         self.username = ''
         self.room_id = ''
         self.team_id = ''
+        self.lat = 0.0
+        self.lng = 0.0
         super().__init__(key, data)
-        self._fields = ["username", "room_id", "team_id"]
+        self._fields = ["username", "room_id", "team_id", "lat", "lng"]
         if data:
             self._set_data(data)
 

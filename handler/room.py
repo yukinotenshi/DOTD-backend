@@ -37,6 +37,8 @@ def create_room():
         "username": session.username,
         "team_id": "",
         "room_id": room_data["room_id"],
+        "lat": 0.0,
+        "lng": 0.0
     }
 
     player = Player(session.username, player_data)
@@ -66,7 +68,13 @@ def join_room():
     if session.username in room.chasing_team:
         return respond_error("Already in room", 500)
 
-    player_data = {"username": session.username, "team_id": "", "room_id": room.room_id}
+    player_data = {
+        "username": session.username,
+        "team_id": "",
+        "room_id": room.room_id,
+        "lat": 0.0,
+        "lng": 0.0
+    }
 
     player = Player(session.username, player_data)
     player.save()
@@ -125,9 +133,41 @@ def start_room():
     return respond_data(room.to_dict())
 
 
+def leave_room():
+    included, error = check_json_in_request(["room_id"])
+    if not included:
+        return error
+
+    access_token = request.headers.get("Authorization")
+    if not access_token:
+        return respond_error("Session not found", 400)
+
+    session = Session(access_token)
+    session.load()
+
+    room = Room(request.json["room_id"])
+    try:
+        room.load()
+    except:
+        return respond_error("Room not found", 404)
+
+    if session.username in room.chasing_team:
+        room.chasing_team.remove(session.username)
+        room.save()
+        return respond_data(room.to_dict())
+
+    if session.username in room.hiding_team:
+        room.hiding_team.remove(session.username)
+        room.save()
+        return respond_data(room.to_dict())
+
+    return respond_error("Not in room", 404)
+
+
 routes = {
     "/create": ("POST", AuthMiddleware(create_room)),
     "/<room_id>": ("GET", AuthMiddleware(get_room)),
     "/join": ("POST", AuthMiddleware(join_room)),
     "/start": ("POST", AuthMiddleware(start_room)),
+    "/leave": ("POST", AuthMiddleware(leave_room))
 }

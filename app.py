@@ -4,11 +4,13 @@ dotenv.load_dotenv()
 
 from handler import user_routes, room_routes
 from core.router import Router
+from flask_cors import CORS
 from flask import Flask
 import os
 
 
 app = Flask(__name__)
+CORS(app)
 router = Router(app)
 
 
