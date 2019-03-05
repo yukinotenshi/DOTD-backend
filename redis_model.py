@@ -1,4 +1,4 @@
-import simplejson as json
+import json
 import load_env
 from redis_wrapper import RedisClient
 
