@@ -9,16 +9,17 @@ from flask import Flask
 import os
 
 
-app = Flask(__name__)
-CORS(app)
-router = Router(app)
+def initialize_app():
+    app = Flask(__name__)
+    router = Router(app)
+    router.get("/", lambda: "DOTD Backend Service Runnning")
+    router.group("/user", user_routes)
+    router.group("/room", room_routes)
+    CORS(app)
+    router.execute()
+    return app
 
-
-router.get("/", lambda: "DOTD Backend Service Runnning")
-router.group("/user", user_routes)
-router.group("/room", room_routes)
-
+app = initialize_app()
 
 if __name__ == "__main__":
-    router.execute()
     app.run(port=int(os.getenv("PORT")), host=os.getenv("HOST"))
