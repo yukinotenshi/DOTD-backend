@@ -21,7 +21,7 @@ def register():
         session = Session(access_token, {"username": username})
         session.save()
     except PeeweeException as e:
-        return respond_error(str(e), 500)
+        return respond_message(str(e), 500)
 
     data = user.to_dict()
     data["access_token"] = access_token
@@ -38,7 +38,7 @@ def login():
 
     user = User.get_or_none(User.password == password, User.username == username)
     if not user:
-        return respond_error("User not found", 404)
+        return respond_message("User not found", 404)
 
     access_token = generate_random_string()
     session = Session(access_token, {"username": username})
@@ -52,7 +52,7 @@ def login():
 def profile():
     access_token = request.headers.get("Authorization")
     if not access_token:
-        return respond_error("Session not found", 400)
+        return respond_message("Session not found", 400)
 
     session = Session(access_token)
     session.load()

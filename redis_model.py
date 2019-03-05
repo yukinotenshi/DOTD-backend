@@ -26,6 +26,9 @@ class RedisBaseModel:
         data = json.loads(data)
         self._set_data(data)
 
+    def delete(self):
+        self._r.delete([self._key])
+
     def to_dict(self):
         data = {}
         for field_name in self._fields:
@@ -50,6 +53,7 @@ class Player(RedisBaseModel):
         self.team_id = ""
         self.lat = 0.0
         self.lng = 0.0
+        self.alive = True
         super().__init__(key, data)
         self._fields = ["username", "room_id", "team_id", "lat", "lng"]
         if data:
@@ -66,3 +70,34 @@ class Room(RedisBaseModel):
         self._fields = ["room_id", "chasing_team", "hiding_team", "owner"]
         if data:
             self._set_data(data)
+
+
+class Game(RedisBaseModel):
+    def __init__(self, game_id, data=None):
+        self.game_id = game_id
+        self.room = None
+        self.players = []
+        super().__init__(game_id, data)
+        self._fields = ["game_id", "room", "players"]
+        if data:
+            self._set_data(data)
+
+    def load_players(self):
+        player_usernames = self.room.chasing_team + self.room.hiding_team
+        self.players = []
+        for username in player_usernames:
+            p = Player(username)
+            p.load()
+            self.players.append(p)
+
+    def to_dict(self):
+        data = {}
+        for field_name in self._fields:
+            if field_name == "room":
+                data[field_name] = self.room.to_dict()
+            elif field_name == "players":
+                data[field_name] = [p.to_dict() for p in self.players]
+            else:
+                data[field_name] = getattr(self, field_name)
+
+        return data
