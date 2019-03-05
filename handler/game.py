@@ -119,17 +119,51 @@ def get_intensity():
         "intensity": score
     }
     if score == 1:
-        data["position"] = {
-            "lat": p.lat,
-            "lng": p.lng
-        }
+        data["player"] = p.to_dict()
 
     return respond_data(data)
+
+
+def catch():
+    session = load_session()
+    player = Player(session.username)
+    player.load()
+
+    try:
+        game = Game(player.room_id)
+        game.load()
+    except:
+        return respond_data("Not in game", 404)
+
+    for p in game.players:
+        if not p.alive:
+            continue
+
+        if p.username == session.username:
+            continue
+
+        if p.team_id == player.team_id:
+            continue
+
+        x_dist = p.lat - player.lat
+        y_dist = p.lng = player.lng
+        # 1 degree lat/lng is approx 111km
+        distance = x_dist ** 2 + y_dist ** 2 * 111000
+        if distance > 1.5:
+            continue
+
+        p.alive = False
+        p.save()
+
+        return respond_data(p.to_dict())
+
+    return respond_message("No catchable player in radius", 404)
 
 
 routes = {
     '/location': ('POST', AuthMiddleware(submit_location)),
     '/start': ('POST', AuthMiddleware(start_game)),
     '/<game_id>': ('GET', AuthMiddleware(get_status)),
-    '/intensity': ('GET', AuthMiddleware(get_intensity))
+    '/intensity': ('GET', AuthMiddleware(get_intensity)),
+    '/catch': ('POST', AuthMiddleware(catch)),
 }

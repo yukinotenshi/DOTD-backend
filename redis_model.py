@@ -1,4 +1,4 @@
-import json
+import simplejson as json
 import load_env
 from redis_wrapper import RedisClient
 
@@ -6,7 +6,7 @@ from redis_wrapper import RedisClient
 class RedisBaseModel:
     def __init__(self, key, data=None):
         self._key = key
-        self._r = RedisClient()
+        self._r = RedisClient.load()
         self._fields = []
 
     def _set_data(self, data):
