@@ -1,3 +1,4 @@
+from math import sqrt
 from random import choice
 from middleware.auth import AuthMiddleware
 from misc import generate_random_string
@@ -102,7 +103,7 @@ def get_intensity():
         x_dist = p.lat - player.lat
         y_dist = p.lng = player.lng
         # 1 degree lat/lng is approx 111km
-        distance = x_dist ** 2 + y_dist ** 2 * 111000
+        distance = sqrt(x_dist ** 2 + y_dist ** 2) * 111000
         if distance < 1.5:
             score = 1
         elif distance < 3:
@@ -146,7 +147,7 @@ def catch():
         x_dist = p.lat - player.lat
         y_dist = p.lng = player.lng
         # 1 degree lat/lng is approx 111km
-        distance = x_dist ** 2 + y_dist ** 2 * 111000
+        distance = sqrt(x_dist ** 2 + y_dist ** 2) * 111000
         if distance > 1.5:
             continue
 
