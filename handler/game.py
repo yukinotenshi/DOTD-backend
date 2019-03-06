@@ -105,16 +105,16 @@ def get_intensity():
         y_dist = p.lng - player.lng
         # 1 degree lat/lng is approx 111km
         distance = sqrt(x_dist ** 2 + y_dist ** 2) * 111000
-        if distance < 6 and score < 1:
+        if distance < 3 and score < 1:
             nearest_player = p
             score = 1
-        elif distance < 10 and score < 0.8:
+        elif distance < 5 and score < 0.8:
             nearest_player = p
             score = 0.8
-        elif distance < 13 and score < 0.5:
+        elif distance < 7 and score < 0.5:
             nearest_player = p
             score = 0.5
-        elif distance < 18 and score < 0.2:
+        elif distance < 10 and score < 0.2:
             nearest_player = p
             score = 0.2
         else:
@@ -152,7 +152,7 @@ def catch():
         y_dist = p.lng - player.lng
         # 1 degree lat/lng is approx 111km
         distance = sqrt(x_dist ** 2 + y_dist ** 2) * 111000
-        if distance > 6:
+        if distance > 3:
             continue
 
         p.alive = False
