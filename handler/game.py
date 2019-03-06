@@ -159,10 +159,19 @@ def catch():
     return respond_message("No catchable player in radius", 404)
 
 
+def get_player():
+    session = load_session()
+    player = Player(session.username)
+    player.load()
+
+    return respond_data(player.to_dict())
+
+
 routes = {
     "/location": ("POST", AuthMiddleware(submit_location)),
     "/start": ("POST", AuthMiddleware(start_game)),
     "/<game_id>": ("GET", AuthMiddleware(get_status)),
     "/intensity": ("GET", AuthMiddleware(get_intensity)),
     "/catch": ("POST", AuthMiddleware(catch)),
+    "/player": ("GET", AuthMiddleware(get_player))
 }
