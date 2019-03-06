@@ -90,6 +90,7 @@ def get_intensity():
         return respond_data("Not in game", 404)
 
     score = 0
+    nearest_player = None
     for p in game.players:
         if not p.alive:
             continue
@@ -104,21 +105,24 @@ def get_intensity():
         y_dist = p.lng - player.lng
         # 1 degree lat/lng is approx 111km
         distance = sqrt(x_dist ** 2 + y_dist ** 2) * 111000
-        if distance < 3:
+        if distance < 3 and score < 1:
+            nearest_player = p
             score = 1
-        elif distance < 7:
+        elif distance < 7 and score < 0.8:
+            nearest_player = p
             score = 0.8
-        elif distance < 10:
+        elif distance < 10 and score < 0.5:
+            nearest_player = p
             score = 0.5
-        elif distance < 15:
+        elif distance < 15 and score < 0.2:
+            nearest_player = p
             score = 0.2
         else:
             continue
-        break
 
     data = {"intensity": score}
     if score == 1:
-        data["player"] = p.to_dict()
+        data["player"] = nearest_player.to_dict()
 
     return respond_data(data)
 
