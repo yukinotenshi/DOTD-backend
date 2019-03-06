@@ -57,7 +57,7 @@ def join_room():
             room.load()
             room.chasing_team.remove(session.username)
             room.hiding_team.remove(session.username)
-            player.room_id = ''
+            player.room_id = ""
             room.save()
             player.save()
     except:

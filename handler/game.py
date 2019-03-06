@@ -105,16 +105,16 @@ def get_intensity():
         y_dist = p.lng - player.lng
         # 1 degree lat/lng is approx 111km
         distance = sqrt(x_dist ** 2 + y_dist ** 2) * 111000
-        if distance < 3 and score < 1:
+        if distance < 6 and score < 1:
             nearest_player = p
             score = 1
-        elif distance < 7 and score < 0.8:
+        elif distance < 10 and score < 0.8:
             nearest_player = p
             score = 0.8
-        elif distance < 10 and score < 0.5:
+        elif distance < 13 and score < 0.5:
             nearest_player = p
             score = 0.5
-        elif distance < 15 and score < 0.2:
+        elif distance < 18 and score < 0.2:
             nearest_player = p
             score = 0.2
         else:
@@ -152,7 +152,7 @@ def catch():
         y_dist = p.lng - player.lng
         # 1 degree lat/lng is approx 111km
         distance = sqrt(x_dist ** 2 + y_dist ** 2) * 111000
-        if distance > 3:
+        if distance > 6:
             continue
 
         p.alive = False
@@ -171,11 +171,32 @@ def get_player():
     return respond_data(player.to_dict())
 
 
+def end_game():
+    session = load_session()
+    player = Player(session.username)
+    player.load()
+
+    game = Game(player.room_id)
+    game.load()
+
+    for p in game.room.hiding_team:
+        player = Player(p)
+        player.load()
+        if player.alive:
+            return respond_data({"winner": player.team_id})
+
+    player = Player(game.room.chasing_team[0])
+    player.load()
+
+    return respond_data({"winner": player.team_id})
+
+
 routes = {
     "/location": ("POST", AuthMiddleware(submit_location)),
     "/start": ("POST", AuthMiddleware(start_game)),
     "/<game_id>": ("GET", AuthMiddleware(get_status)),
     "/intensity": ("GET", AuthMiddleware(get_intensity)),
     "/catch": ("POST", AuthMiddleware(catch)),
-    "/player": ("GET", AuthMiddleware(get_player))
+    "/player": ("GET", AuthMiddleware(get_player)),
+    "/end": ("GET", AuthMiddleware(end_game)),
 }

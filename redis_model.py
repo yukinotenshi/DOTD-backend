@@ -55,8 +55,8 @@ class Player(RedisBaseModel):
         self.lng = 0.0
         self.alive = True
         super().__init__(key, data)
-        if data and not data.get('alive', False):
-            data['alive'] = True
+        if data and not data.get("alive", False):
+            data["alive"] = True
         self._fields = ["username", "room_id", "team_id", "lat", "lng", "alive"]
         if data:
             self._set_data(data)
