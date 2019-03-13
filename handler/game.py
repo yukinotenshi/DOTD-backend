@@ -30,6 +30,7 @@ def start_game():
         player.load()
         player.team_id = room.room_id + "hiding"
         player.save()
+        player.character = choice(["debt", "drunk"])
         hiding_team.append(username)
 
     for p in room.chasing_team:
@@ -37,6 +38,7 @@ def start_game():
             continue
         player = Player(p)
         player.load()
+        player.character = choice(["police", "debt-collector"])
         player.team_id = room.room_id + "chasing"
         player.save()
         chasing_team.append(p)
