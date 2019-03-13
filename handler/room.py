@@ -19,7 +19,7 @@ def create_room():
     session = load_session()
 
     room_data = {
-        "room_id": generate_random_string(8),
+        "room_id": generate_random_string(5),
         "owner": session.username,
         "chasing_team": [session.username],
         "hiding_team": [],

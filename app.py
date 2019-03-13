@@ -25,4 +25,4 @@ app = initialize_app()
 
 
 if __name__ == "__main__":
-    app.run(port=int(os.getenv("PORT")), host=os.getenv("HOST"))
+    app.run(port=int(os.getenv("PORT")), host=os.getenv("HOST"), threaded=True)
