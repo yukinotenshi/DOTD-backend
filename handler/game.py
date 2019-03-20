@@ -1,9 +1,9 @@
 from math import sqrt
 from random import choice
 from middleware.auth import AuthMiddleware
-from misc import generate_random_string
 from core.util import *
 from redis_model import Room, Player, Game
+from skeleton.character import *
 
 
 def start_game():
@@ -30,7 +30,7 @@ def start_game():
         player.load()
         player.team_id = room.room_id + "hiding"
         player.save()
-        player.character = choice(["debt", "drunk"])
+        player.character = choice(hiding_characters)
         hiding_team.append(username)
 
     for p in room.chasing_team:
@@ -38,7 +38,7 @@ def start_game():
             continue
         player = Player(p)
         player.load()
-        player.character = choice(["police", "debt-collector"])
+        player.character = choice(chasing_characters)
         player.team_id = room.room_id + "chasing"
         player.save()
         chasing_team.append(p)

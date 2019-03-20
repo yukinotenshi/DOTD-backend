@@ -2,7 +2,7 @@ import dotenv
 
 dotenv.load_dotenv()
 
-from handler import user_routes, room_routes, game_routes
+from handler import user_routes, room_routes, game_routes, skill_routes
 from core.router import Router
 from flask_cors import CORS
 from flask import Flask
@@ -16,6 +16,7 @@ def initialize_app():
     router.group("/user", user_routes)
     router.group("/room", room_routes)
     router.group("/game", game_routes)
+    router.group("/skill", skill_routes)
     CORS(_app)
     router.execute()
     return _app

@@ -60,7 +60,15 @@ class Player(RedisBaseModel):
             data["alive"] = True
         if data and not data.get("character", False):
             data["character"] = "debt"
-        self._fields = ["username", "room_id", "team_id", "lat", "lng", "alive", "character"]
+        self._fields = [
+            "username",
+            "room_id",
+            "team_id",
+            "lat",
+            "lng",
+            "alive",
+            "character",
+        ]
         if data:
             self._set_data(data)
 
@@ -81,9 +89,12 @@ class Game(RedisBaseModel):
     def __init__(self, game_id, data=None):
         self.game_id = game_id
         self.room = None
+        self.active_skill = None
+        if data and "active_skill" not in data:
+            data["active_skill"] = None
         self.players = []
         super().__init__(game_id, data)
-        self._fields = ["game_id", "room", "players"]
+        self._fields = ["game_id", "room", "players", "active_skill"]
         if data:
             self._set_data(data)
 
@@ -100,6 +111,11 @@ class Game(RedisBaseModel):
         data = json.loads(data)
         room = Room(data["room"]["room_id"])
         room.load()
+        if data["active_skill"] != {}:
+            self.active_skill = ActiveSkill(data["active_skill"]["skill_id"])
+            self.active_skill.load()
+        else:
+            self.active_skill = None
         self.room = room
         self.players = []
         for p in data["players"]:
@@ -114,7 +130,25 @@ class Game(RedisBaseModel):
                 data[field_name] = self.room.to_dict()
             elif field_name == "players":
                 data[field_name] = [p.to_dict() for p in self.players]
+            elif field_name == "active_skill":
+                if self.active_skill:
+                    data["active_skill"] = self.active_skill.to_dict()
+                else:
+                    data["active_skill"] = {}
             else:
                 data[field_name] = getattr(self, field_name)
 
         return data
+
+
+class ActiveSkill(RedisBaseModel):
+    def __init__(self, skill_id, data=None):
+        self.skill_id = skill_id
+        self.value = 0.0
+        self.name = ""
+        self.caster = ""
+        self.target = []
+        super().__init__(skill_id, data)
+        self._fields = ["skill_id", "name", "caster", "target", "value"]
+        if data:
+            self._set_data(data)
