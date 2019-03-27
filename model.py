@@ -25,6 +25,8 @@ class BaseModel(pw.Model):
 class User(BaseModel):
     username = pw.CharField(unique=True)
     password = pw.CharField()
+    level = pw.IntegerField(default=1)
+    exp = pw.IntegerField(default=0)
 
     def to_dict(self):
         return model_to_dict(self, exclude=[User.password])
