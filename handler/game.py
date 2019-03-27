@@ -29,8 +29,8 @@ def start_game():
         player = Player(username)
         player.load()
         player.team_id = room.room_id + "hiding"
-        player.save()
         player.character = choice(hiding_characters)
+        player.save()
         hiding_team.append(username)
 
     for p in room.chasing_team:
