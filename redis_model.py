@@ -1,6 +1,7 @@
 import json
 import load_env
 from redis_wrapper import RedisClient
+from model import User
 
 
 class RedisBaseModel:
@@ -55,6 +56,8 @@ class Player(RedisBaseModel):
         self.lng = 0.0
         self.character = ""
         self.alive = True
+        self.level = 1
+        self.exp = 0
         super().__init__(key, data)
         if data and not data.get("alive", False):
             data["alive"] = True
@@ -68,9 +71,20 @@ class Player(RedisBaseModel):
             "lng",
             "alive",
             "character",
+            "exp",
+            "level"
         ]
         if data:
             self._set_data(data)
+
+    def save(self):
+        user = User.get_or_none(User.username == self.username)
+        if user is not None:
+            user.level = self.level
+            user.exp = self.exp
+            user.save()
+
+        return super(Player, self).save()
 
 
 class Room(RedisBaseModel):

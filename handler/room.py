@@ -1,4 +1,5 @@
 from random import choice
+from model import User
 from middleware.auth import AuthMiddleware
 from misc import generate_random_string
 from core.util import *
@@ -28,14 +29,19 @@ def create_room():
     room = Room(room_data["room_id"], room_data)
     room.save()
 
+    user = User.get_or_none(User.username == session.username)
+    if not user:
+        return respond_message("User not found", 404)
+
     player_data = {
         "username": session.username,
         "team_id": "",
-        "room_id": room_data["room_id"],
+        "room_id": room.room_id,
         "lat": 0.0,
         "lng": 0.0,
+        "level": user.level,
+        "exp": user.exp
     }
-
     player = Player(session.username, player_data)
     player.save()
 
@@ -72,12 +78,18 @@ def join_room():
     if session.username in room.chasing_team:
         return respond_message("Already in room", 500)
 
+    user = User.get_or_none(User.username == session.username)
+    if not user:
+        return respond_message("User not found", 404)
+
     player_data = {
         "username": session.username,
         "team_id": "",
         "room_id": room.room_id,
         "lat": 0.0,
         "lng": 0.0,
+        "level": user.level,
+        "exp": user.exp
     }
 
     player = Player(session.username, player_data)
