@@ -98,6 +98,21 @@ class Room(RedisBaseModel):
         if data:
             self._set_data(data)
 
+    def to_dict(self):
+        data = {}
+        for field_name in self._fields:
+            if field_name == 'chasing_team' or field_name == 'hiding_team':
+                usernames = getattr(self, field_name)
+                data[field_name] = []
+                for u in usernames:
+                    p = Player(u)
+                    p.load()
+                    data[field_name].append(p.to_dict())
+            else:
+                data[field_name] = getattr(self, field_name)
+
+        return data
+
 
 class Game(RedisBaseModel):
     def __init__(self, game_id, data=None):
