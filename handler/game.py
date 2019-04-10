@@ -34,7 +34,7 @@ def start_game():
         hiding_team.append(player.username)
 
     for player in room.chasing_team:
-        if player in hiding_team:
+        if player['username'] in hiding_team:
             continue
         player = Player(player['username'])
         player.load()
