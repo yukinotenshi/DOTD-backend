@@ -105,7 +105,10 @@ class Room(RedisBaseModel):
                 usernames = getattr(self, field_name)
                 data[field_name] = []
                 for u in usernames:
-                    p = Player(u)
+                    if type(u) == dict:
+                        p = Player(u['username'])
+                    else:
+                        p = Player(u)
                     p.load()
                     data[field_name].append(p.to_dict())
             else:
