@@ -158,6 +158,12 @@ def catch():
             continue
 
         p.alive = False
+        if player.exp == 50:
+            player.level += 1
+            player.exp = 0
+        else:
+            player.exp = 50
+        player.save()
         p.save()
 
         return respond_data(p.to_dict())
@@ -193,6 +199,39 @@ def end_game():
     return respond_data({"winner": player.team_id})
 
 
+def game_summary():
+    session = load_session()
+    player = Player(session.username)
+    player.load()
+
+    game = Game(player.room_id)
+    game.load()
+
+    time = request.json.get('time')
+    if player.team_id[-4] == 'd':
+        exp_diff = time / 6
+        player.level += exp_diff / 100
+        player.exp = (exp_diff + player.exp) % 100
+        player.save()
+    else:
+        user = User.get_or_none(User.username == session.username)
+        exp_diff = (player.level - user.level) * 100 + player.exp - user.exp
+
+    user = User.get_or_none(User.username == session.username)
+    user.exp = player.exp
+    user.level = player.level
+    user.save()
+
+    summary = {
+        'exp_gain': exp_diff,
+        'level_gain': exp_diff / 100,
+        'exp': player.exp,
+        'level': player.level
+    }
+
+    return respond_data(summary)
+
+
 routes = {
     "/location": ("POST", AuthMiddleware(submit_location)),
     "/start": ("POST", AuthMiddleware(start_game)),
@@ -201,4 +240,5 @@ routes = {
     "/catch": ("POST", AuthMiddleware(catch)),
     "/player": ("GET", AuthMiddleware(get_player)),
     "/end": ("GET", AuthMiddleware(end_game)),
+    "/summary": ("POST", AuthMiddleware(game_summary))
 }

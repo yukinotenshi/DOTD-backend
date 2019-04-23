@@ -19,6 +19,22 @@ def get_room(room_id):
 def create_room():
     session = load_session()
 
+    user = User.get_or_none(User.username == session.username)
+    if not user:
+        return respond_message("User not found", 404)
+
+    player_data = {
+        "username": session.username,
+        "team_id": "",
+        "room_id": "",
+        "lat": 0.0,
+        "lng": 0.0,
+        "level": user.level,
+        "exp": user.exp,
+    }
+    player = Player(session.username, player_data)
+    player.save()
+
     room_data = {
         "room_id": generate_random_string(5),
         "owner": session.username,
@@ -29,20 +45,7 @@ def create_room():
     room = Room(room_data["room_id"], room_data)
     room.save()
 
-    user = User.get_or_none(User.username == session.username)
-    if not user:
-        return respond_message("User not found", 404)
-
-    player_data = {
-        "username": session.username,
-        "team_id": "",
-        "room_id": room.room_id,
-        "lat": 0.0,
-        "lng": 0.0,
-        "level": user.level,
-        "exp": user.exp,
-    }
-    player = Player(session.username, player_data)
+    player.room_id = room.room_id
     player.save()
 
     return jsonify(room.to_dict())
