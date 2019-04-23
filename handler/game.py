@@ -223,7 +223,7 @@ def game_summary():
 
     summary = {
         'exp_gain': exp_diff,
-        'level_gain': exp_diff / 100,
+        'level_gain': exp_diff // 100,
         'exp': player.exp,
         'level': player.level
     }
