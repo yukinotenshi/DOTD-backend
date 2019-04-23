@@ -187,12 +187,12 @@ def end_game():
     game.load()
 
     for p in game.room.hiding_team:
-        player = Player(p)
+        player = Player(p['username'])
         player.load()
         if player.alive:
             return respond_data({"winner": player.team_id})
 
-    player = Player(game.room.chasing_team[0])
+    player = Player(game.room.chasing_team[0]['username'])
     player.load()
 
     return respond_data({"winner": player.team_id})
