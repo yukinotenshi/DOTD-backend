@@ -158,11 +158,10 @@ def catch():
             continue
 
         p.alive = False
-        if player.exp == 50:
-            player.level += 1
-            player.exp = 0
-        else:
-            player.exp = 50
+        player.exp += 50
+        if player.exp / 100 > 0:
+            player.level += player.exp / 100
+            player.exp = player.exp % 100
         player.save()
         p.save()
 
