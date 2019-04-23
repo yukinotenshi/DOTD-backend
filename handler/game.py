@@ -209,7 +209,7 @@ def game_summary():
     time = request.json.get('time')
     if player.team_id[-4] == 'd':
         exp_diff = int(time / 6)
-        player.level += exp_diff // 100
+        player.level += (exp_diff + player.exp) // 100
         player.exp = (exp_diff + player.exp) % 100
         player.save()
     else:
