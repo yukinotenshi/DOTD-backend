@@ -8,5 +8,5 @@ db = SqliteDatabase(os.getenv("DATABASE"))
 migrator = SqliteMigrator(database=db)
 migrate(
     migrator.add_column("user", "level", IntegerField(default=1)),
-    migrator.add_column("user", "exp", IntegerField(default=0))
+    migrator.add_column("user", "exp", IntegerField(default=0)),
 )

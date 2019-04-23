@@ -40,7 +40,7 @@ def create_room():
         "lat": 0.0,
         "lng": 0.0,
         "level": user.level,
-        "exp": user.exp
+        "exp": user.exp,
     }
     player = Player(session.username, player_data)
     player.save()
@@ -89,7 +89,7 @@ def join_room():
         "lat": 0.0,
         "lng": 0.0,
         "level": user.level,
-        "exp": user.exp
+        "exp": user.exp,
     }
 
     player = Player(session.username, player_data)

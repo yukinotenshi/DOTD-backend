@@ -26,7 +26,7 @@ def start_game():
 
     for _ in range(player_count // 2):
         player = choice(room.chasing_team)
-        player = Player(player['username'])
+        player = Player(player["username"])
         player.load()
         player.team_id = room.room_id + "hiding"
         player.character = choice(hiding_characters)
@@ -34,9 +34,9 @@ def start_game():
         hiding_team.append(player.username)
 
     for player in room.chasing_team:
-        if player['username'] in hiding_team:
+        if player["username"] in hiding_team:
             continue
-        player = Player(player['username'])
+        player = Player(player["username"])
         player.load()
         player.character = choice(chasing_characters)
         player.team_id = room.room_id + "chasing"

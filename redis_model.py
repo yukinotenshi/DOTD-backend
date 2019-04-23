@@ -72,7 +72,7 @@ class Player(RedisBaseModel):
             "alive",
             "character",
             "exp",
-            "level"
+            "level",
         ]
         if data:
             self._set_data(data)
@@ -101,12 +101,12 @@ class Room(RedisBaseModel):
     def to_dict(self):
         data = {}
         for field_name in self._fields:
-            if field_name == 'chasing_team' or field_name == 'hiding_team':
+            if field_name == "chasing_team" or field_name == "hiding_team":
                 usernames = getattr(self, field_name)
                 data[field_name] = []
                 for u in usernames:
                     if type(u) == dict:
-                        p = Player(u['username'])
+                        p = Player(u["username"])
                     else:
                         p = Player(u)
                     p.load()
