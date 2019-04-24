@@ -20,10 +20,11 @@ def cast_skill():
     game.active_skill.name = chara.skill
     game.active_skill.value = skill_value
     game.active_skill.caster = session.username
+    data = game.to_dict()
     if player.team_id[-7:] == "chasing":
-        game.active_skill.target = game.room.hiding_team
+        game.active_skill.target = data['room']['hiding_team']
     else:
-        game.active_skill.target = game.room.chasing_team
+        game.active_skill.target = data['room']['chasing_team']
 
     game.save()
     game.active_skill.save()
