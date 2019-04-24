@@ -8,7 +8,7 @@ class BaseCharacter:
         self.skill = skill
 
     def calc_skill_value(self):
-        return 2.00
+        return 5.00 + (0.1 * self.player.level)
 
 
 class Police(BaseCharacter):
@@ -31,7 +31,7 @@ class Trickster(BaseCharacter):
         super().__init__(player, "Trickster", "Evasion")
 
     def calc_skill_value(self):
-        return 0.25
+        return 0.25 + (0.05 * self.player.level)
 
 
 characters_class = {
