@@ -78,12 +78,6 @@ class Player(RedisBaseModel):
             self._set_data(data)
 
     def save(self):
-        user = User.get_or_none(User.username == self.username)
-        if user is not None:
-            user.level = self.level
-            user.exp = self.exp
-            user.save()
-
         return super(Player, self).save()
 
 
