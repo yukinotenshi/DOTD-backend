@@ -78,7 +78,8 @@ def join_room():
     except:
         return respond_message("Room not found", 404)
 
-    if session.username in room.chasing_team:
+    chasing_team = [p['username'] if type(p) == dict else p for p in room.chasing_team]
+    if session.username in chasing_team:
         return respond_message("Already in room", 500)
 
     user = User.get_or_none(User.username == session.username)
