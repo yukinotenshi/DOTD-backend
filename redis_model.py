@@ -28,7 +28,7 @@ class RedisBaseModel:
         self._set_data(data)
 
     def delete(self):
-        self._r.delete(self._key)
+        self._r.delete(self._key + type(self).__name__)
 
     def to_dict(self):
         data = {}
