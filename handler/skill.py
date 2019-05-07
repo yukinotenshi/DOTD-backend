@@ -24,6 +24,7 @@ def cast_skill():
     data = game.to_dict()
     if player.team_id[-7:] == "chasing":
         game.active_skill.target = data['room']['hiding_team']
+        game.active_skill.target = [x for x in game.active_skill.target if x['alive']]
         i = 0
         found = False
         for i, p in enumerate(game.active_skill.target):

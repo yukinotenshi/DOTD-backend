@@ -216,17 +216,17 @@ def game_summary():
         user = User.get_or_none(User.username == session.username)
         exp_diff = (player.level - user.level) * 100 + player.exp - user.exp
 
-    user = User.get_or_none(User.username == session.username)
-    user.exp = player.exp
-    user.level = player.level
-    user.save()
-
     summary = {
         'exp_gain': exp_diff,
         'level_gain': exp_diff // 100,
         'exp': player.exp,
         'level': player.level
     }
+
+    user = User.get_or_none(User.username == session.username)
+    user.exp = player.exp
+    user.level = player.level
+    user.save()
 
     return respond_data(summary)
 
