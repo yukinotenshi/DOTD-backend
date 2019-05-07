@@ -109,32 +109,35 @@ def leave_room():
     player.load()
 
     room = Room(player.room_id)
-    player.room_id = ""
     try:
         room.load()
     except:
         return respond_message("Room not found", 404)
 
     if session.username == room.owner:
-        room.delete()
+        player.room_id = ""
         player.save()
         player_usernames = room.chasing_team + room.hiding_team
+        player_usernames = [p['username'] if type(p) == dict else p for p in player_usernames]
         for username in player_usernames:
             p = Player(username)
             p.load()
             p.room_id = ""
             p.save()
 
+        room.delete()
         return respond_message("Room deleted", 200)
 
-    if session.username in room.chasing_team:
-        room.chasing_team.remove(session.username)
+    if player.to_dict() in room.chasing_team:
+        room.chasing_team.remove(player.to_dict())
+        player.room_id = ""
         room.save()
         player.save()
         return respond_data(room.to_dict())
 
-    if session.username in room.hiding_team:
-        room.hiding_team.remove(session.username)
+    if player.to_dict() in room.hiding_team:
+        room.hiding_team.remove(player.to_dict())
+        player.room_id = ""
         room.save()
         player.save()
         return respond_data(room.to_dict())
