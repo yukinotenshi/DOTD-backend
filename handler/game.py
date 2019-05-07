@@ -32,6 +32,7 @@ def start_game():
 
     for _ in range(player_count // 2):
         player = choice(players)
+        players.remove(player)
         player = Player(player["username"])
         player.load()
         player.team_id = room.room_id + "hiding"
